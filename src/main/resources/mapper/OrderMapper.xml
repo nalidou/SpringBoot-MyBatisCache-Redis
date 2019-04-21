@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cache.springmybatisredis.dao.OrderMapper">
+
+    <cache type="com.cache.springmybatisredis.cache.MybatisRedisCache">
+        <property name="eviction" value="LRU" />
+        <property name="flushInterval" value="6000000" />
+        <property name="size" value="1024" />
+        <property name="readOnly" value="false" />
+    </cache>
+
+    <insert id="add" parameterType="com.cache.springmybatisredis.model.Order">
+        INSERT INTO order_x (name, createTime) VALUE (#{name},#{createTime})
+    </insert>
+
+    <select id="getById" resultType="com.cache.springmybatisredis.model.Order">
+        SELECT * FROM order_x WHERE id = #{id}
+    </select>
+
+    <select id="getAll" resultType="com.cache.springmybatisredis.model.Order">
+        SELECT * FROM order_x
+    </select>
+
+    <update id="update" parameterType="com.cache.springmybatisredis.model.Order">
+        UPDATE order_x
+        <set>
+            <if test="name != null">,name = #{name}</if>
+            <if test="createTime != 0L">,createTime = #{createTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="com.cache.springmybatisredis.model.Order">
+        DELETE FROM order_x
+        <where>
+            <if test="id != 0L">and id = #{id}</if>
+            <if test="name != null">and name = #{name}</if>
+        </where>
+    </delete>
+
+</mapper>
